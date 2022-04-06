@@ -4,7 +4,7 @@ import { RecipeService } from "../recipes/recipe.service";
 
 import { environment } from "../../environments/environment";
 import { Recipe } from "../recipes/recipe.model";
-import { map } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 
 @Injectable({ providedIn: "root" })
 export class DataStorageService {
@@ -22,20 +22,18 @@ export class DataStorageService {
   }
 
   fetchRecipes() {
-    this.http
-      .get<Recipe[]>(environment.firebaseUrl)
-      .pipe(
-        map((recipes) => {
-          return recipes.map((recipe) => {
-            return {
-              ...recipe,
-              ingredients: recipe.ingredients ? recipe.ingredients : [],
-            };
-          });
-        })
-      )
-      .subscribe((recipes) => {
+    return this.http.get<Recipe[]>(environment.firebaseUrl).pipe(
+      map((recipes) => {
+        return recipes.map((recipe) => {
+          return {
+            ...recipe,
+            ingredients: recipe.ingredients ? recipe.ingredients : [],
+          };
+        });
+      }),
+      tap((recipes) => {
         this.recipesService.setRecipes(recipes);
-      });
+      })
+    );
   }
 }
