@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  firebaseUrl:
+    "https://shopping-app-angular-119e3-default-rtdb.firebaseio.com/recipes.json",
 };
 
 /*
